@@ -1,6 +1,7 @@
 #ifndef TERMINAL_H
 #define TERMINAL_H
 #include "vga_text_graphic.h"
+#include "terminal_config.h"
 #include <stdint.h>
 char cwd[MAX_TERMINAL_PREFIX_BUFF+1];
 char terminal_buff[(MAX_TEMRINAL_HISTORY+1)* VGA_WIDTH];
@@ -21,6 +22,4 @@ void terminal_pause_render();
 void terminal_resume_render();
 
 void terminal_reload();
-
-
 #endif
