@@ -3,6 +3,7 @@
 struct idt_desc idt_descriptors[total_interrupts];
 struct idtr_desc idtr_descriptor;
 
+extern void* interrupt_pointer_table[total_interrupts];
 
 void idt_init() {
     memset(idt_descriptors, 0, sizeof(idt_descriptors));
