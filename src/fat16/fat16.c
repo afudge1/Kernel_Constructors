@@ -16,7 +16,6 @@ static int write_cluster(uint32_t cluster, const void *buffer);
 static uint32_t get_next_cluster(uint32_t cluster);
 static int allocate_cluster();
 
-
 void init_fat16() {
     // read boot sector
     //syscall(SYS_READ, &boot_sector, SECTOR_SIZE);
