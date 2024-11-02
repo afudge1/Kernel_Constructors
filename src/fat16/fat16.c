@@ -1,7 +1,7 @@
 #include "fat16.h"
-#include "syscall_handler.h"
+#include "kernel/syscall_handler.h"
 #include <stdint.h>
-#include <string.h>
+#include "libc/string.h"
 
 #define SECTOR_SIZE 512
 #define MAX_FILENAME_LENGTH 13 // 8.3 filename format
@@ -18,7 +18,7 @@ static int allocate_cluster();
 
 void init_fat16() {
     // read boot sector
-    syscall(SYS_READ, &boot_sector, SECTOR_SIZE);
+    //syscall(SYS_READ, &boot_sector, SECTOR_SIZE);
 
     // Verify if it's a FAT16 filesystem
     if (boot_sector.bytes_per_sector != SECTOR_SIZE || boot_sector.num_fats == 0) {
@@ -70,7 +70,7 @@ int write_file(const char *filename, const void *buffer, size_t size) {
 }
 
 static int locate_file(const char *filename) {
-    uint32_t root_dir_start = (boot_sector.reserved_sectors + (boot_sector.num_fats * boot_sector.fat_size)) * boot_sector.bytes_per_sector;
+    //uint32_t root_dir_start = (boot_sector.reserved_sectors + (boot_sector.num_fats * boot_sector.fat_size)) * boot_sector.bytes_per_sector;
     uint32_t dir_entry_offset = 0;
 
     // Calculate the number of entries in the root directory
@@ -79,9 +79,9 @@ static int locate_file(const char *filename) {
     for (uint32_t i = 0; i < num_entries; i++) {
         // Read each directory entry
         uint8_t dir_entry[32]; // Size of a single directory entry
-        if (syscall(SYS_READ, (void *)(root_dir_start + dir_entry_offset), dir_entry, sizeof(dir_entry)) < 0) {
+        //if (syscall(SYS_READ, (void *)(root_dir_start + dir_entry_offset), dir_entry, sizeof(dir_entry)) < 0) {
             return -1; // Error reading directory
-        }
+        //}
 
         // Check if the entry is unused
         if (dir_entry[0] == 0x00) {
@@ -95,23 +95,24 @@ static int locate_file(const char *filename) {
         }
 
         // Extract the filename and compare
-        char entry_filename[MAX_FILENAME_LENGTH] = {0};
-        strncpy(entry_filename, (char *)dir_entry, 8);
-        entry_filename[8] = '\0'; // Null-terminate the filename
+        //char entry_filename[MAX_FILENAME_LENGTH] = {0};
+        //strncpy(entry_filename, (char *)dir_entry, 8);
+        //entry_filename[8] = '\0'; // Null-terminate the filename
 
         // Handle the extension
         if (dir_entry[8] != ' ') {
-            strncat(entry_filename, ".", 1);
-            strncat(entry_filename, (char *)(dir_entry + 8), 3); // Add extension
+            //strncat(entry_filename, ".", 1);
+            //strncat(entry_filename, (char *)(dir_entry + 8), 3); // Add extension
         }
 
         // Compare with the given filename
-        if (strncmp(entry_filename, filename, MAX_FILENAME_LENGTH) == 0) {
+        return 0;
+        //if (strncmp(entry_filename, filename, MAX_FILENAME_LENGTH) == 0) {
             // Found the file; return the starting cluster
             uint16_t first_cluster_low = *(uint16_t *)(dir_entry + 26);
             uint16_t first_cluster_high = *(uint16_t *)(dir_entry + 20);
             return (first_cluster_high << 16) | first_cluster_low; // Return full cluster number
-        }
+        //}
 
         dir_entry_offset += sizeof(dir_entry); // Move to the next entry
     }
@@ -120,9 +121,10 @@ static int locate_file(const char *filename) {
 }
 
 static int read_cluster(uint32_t cluster, void *buffer) {
-    uint32_t cluster_start = (boot_sector.reserved_sectors + (boot_sector.num_fats * boot_sector.fat_size) + 
-                              (cluster - 2) * boot_sector.sectors_per_cluster) * boot_sector.bytes_per_sector;
-    return syscall(SYS_READ, (void *)cluster_start, buffer, CLUSTER_SIZE);
+    //uint32_t cluster_start = (boot_sector.reserved_sectors + (boot_sector.num_fats * boot_sector.fat_size) + 
+    //                          (cluster - 2) * boot_sector.sectors_per_cluster) * boot_sector.bytes_per_sector;
+    return 0;
+    //return syscall(SYS_READ, (void *)cluster_start, buffer, CLUSTER_SIZE);
 }
 
 static int write_cluster(uint32_t cluster, const void *buffer) {
@@ -135,11 +137,11 @@ static uint32_t get_next_cluster(uint32_t cluster) {
     uint16_t fat_entry;
     uint32_t fat_start = boot_sector.reserved_sectors * boot_sector.bytes_per_sector;
     uint32_t fat_offset = (cluster + 2) * sizeof(fat_entry); // Each FAT16 entry is 2 bytes
-
+    return 0;
     // Read the FAT entry corresponding to the current cluster
-    if (syscall(SYS_READ, (void *)(fat_start + fat_offset), &fat_entry, sizeof(fat_entry)) < 0) {
-        return 0; // Error reading FAT
-    }
+    //if (syscall(SYS_READ, (void *)(fat_start + fat_offset), &fat_entry, sizeof(fat_entry)) < 0) {
+       // return 0; // Error reading FAT
+    //}
 
     // Check for end of file markers (0xFFF8 to 0xFFFF)
     if (fat_entry >= 0xFFF8) {
@@ -158,17 +160,17 @@ static int allocate_cluster() {
         uint32_t fat_offset = cluster * sizeof(fat_entry);
 
         // Read the FAT entry
-        if (syscall(SYS_READ, (void *)(fat_start + fat_offset), &fat_entry, sizeof(fat_entry)) < 0) {
+       // if (syscall(SYS_READ, (void *)(fat_start + fat_offset), &fat_entry, sizeof(fat_entry)) < 0) {
             return -1; // Error reading FAT
-        }
+        //}
 
         // Check if the cluster is free (value is 0)
         if (fat_entry == 0) {
             // Mark the cluster as used (e.g., set it to a marker value)
             uint16_t next_cluster_value = 0xFFF8; // Mark as end of file
-            if (syscall(SYS_WRITE, (void *)(fat_start + fat_offset), &next_cluster_value, sizeof(next_cluster_value)) < 0) {
+           // if (syscall(SYS_WRITE, (void *)(fat_start + fat_offset), &next_cluster_value, sizeof(next_cluster_value)) < 0) {
                 return -1; // Error writing to FAT
-            }
+           // }
             return cluster; // Return the allocated cluster
         }
     }
