@@ -2,6 +2,9 @@
 #define TERMINAL_H
 #include "vga_text_graphic.h"
 #include <stdint.h>
+#include "terminal_config.h"
+#include <stdbool.h>
+
 char cwd[MAX_TERMINAL_PREFIX_BUFF+1];
 char terminal_buff[(MAX_TEMRINAL_HISTORY+1)* VGA_WIDTH];
 char terminal_input_buff[MAX_INPUT_BUFFER+1];

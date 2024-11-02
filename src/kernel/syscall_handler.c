@@ -1,5 +1,7 @@
 #include "syscall_handler.h"
 #include "terminal/terminal.h"
+#include "fat16/fat16.h"
+#include "memory/heap/kheap.h"
 
 // Placeholder functions for console I/O
 void console_write(const char *buffer);
@@ -25,9 +27,9 @@ int syscall_handler(int syscall, void *args) {
         }
 
         case SYS_OPEN: {
-            const char *path = ((const char **)args)[0];
-            int flags = *((int *)(((const char **)args)[1]));
-            return file_open(path, flags); // Call to open function
+            //const char *path = ((const char **)args)[0];
+            //int flags = *((int *)(((const char **)args)[1]));
+            return 0;//file_open(path, flags); // Call to open function
         }
 
         case SYS_CLOSE:
@@ -89,16 +91,16 @@ int syscall_handler(int syscall, void *args) {
             return -1;
 
         case SYS_GETPID:
-            return getpid();
+            return 0;//getpid();
 
         case SYS_MALLOC: {
             size_t size = *((size_t *)args); // Size to allocate
-            return (int)my_malloc(size); // Return pointer to allocated memory
+            return (int)kmalloc(size); // Return pointer to allocated memory
         }
 
         case SYS_FREE: {
             void *ptr = *(void **)args; // Pointer to free
-            my_free(ptr); // Free the allocated memory
+            kfree(ptr); // Free the allocated memory
             return 0; // Success
         }
 
