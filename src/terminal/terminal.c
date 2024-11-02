@@ -1,7 +1,14 @@
 #include "terminal.h"
 #include <stdint.h>
 #include "vga_text_graphic.c"
-#include "libc/libc.h"
+//#include "libc/libc.h"
+
+char cwd[MAX_TERMINAL_PREFIX_BUFF+1];
+char terminal_buff[(MAX_TEMRINAL_HISTORY+1)* VGA_WIDTH];
+char terminal_input_buff[MAX_INPUT_BUFFER+1];
+int terminal_active = 1;
+uint32_t textbuffSize = 1;
+
 void terminal_init()
 {
     vga_fill(0,0,VGA_WIDTH,VGA_HEIGHT,' ');

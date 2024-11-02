@@ -7,9 +7,6 @@
 #define VGA_ADDRESS 0xB8000
 #define VGA_TEXT_WHITE_DEFAULT 0b00001111
 
-uint8_t color_byte;
-uint16_t* video_memory;
-
 void vga_setForeground(char color);
 void vga_setBackground(char color);
 void vga_set(int32_t x, int32_t  y, const char* text);

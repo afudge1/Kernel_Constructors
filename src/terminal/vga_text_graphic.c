@@ -1,7 +1,9 @@
-#include "libc/libc.h"
+//#include "libc/libc.h"
 #include <stddef.h>
 #include "vga_text_graphic.h"
 
+uint8_t color_byte;
+uint16_t* video_memory;
 
 void vga_init()
 {
