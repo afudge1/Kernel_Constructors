@@ -1,8 +1,7 @@
 #include "terminal.h"
 #include "stdint.h"
 #include "vga_text_graphic.c"
-//#include "libc.h"
-
+#include "libc.h"
 
 void terminal_init()
 {

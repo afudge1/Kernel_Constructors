@@ -1,11 +1,21 @@
-//#include "libc.h"
+#include "libc.h"
 #include <stddef.h>
 #include "vga_text_graphic.h"
+
+size_t strlen(char *text)
+{
+    size_t length = 0;
+    while(text[length]!='\0')
+    {
+        length++;
+    }
+    return length;
+}
 
 void vga_init()
 {
     color_byte = VGA_TEXT_WHITE_DEFAULT;
-    video_memory = (uint16_t*)(VGA_ADDRESS);
+    video_mem = (uint16_t*)(VGA_ADDRESS);
 }
 
 void vga_setForeground(char color)
@@ -26,7 +36,6 @@ void vga_set(int32_t  x, int32_t  y, const char* text)
         vga_put_char(x+i,y,text[i]);
     }
 }
-
 void vga_fill(int32_t  y, int32_t  x, int32_t  width, int32_t  height, char text)
 {
     for (int y=0;y<height;y++)
