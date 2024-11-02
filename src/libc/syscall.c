@@ -1,5 +1,5 @@
 #include "syscall.h"
-#include "../kernel/syscall_handler.h"
+#include "kernel/syscall_handler.h"
 
 // Function to invoke a syscall
 int user_syscall(int number, void *args) {

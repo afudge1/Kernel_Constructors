@@ -1,5 +1,5 @@
 #include "syscall_handler.h"
-#include "../terminal/terminal.h"
+#include "terminal/terminal.h"
 
 // Placeholder functions for console I/O
 void console_write(const char *buffer);
