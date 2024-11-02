@@ -1,7 +1,8 @@
 #include "terminal.h"
 #include "stdint.h"
 #include "vga_text_graphic.c"
-#include "libc.h"
+#include "libc/libc.h"
+#include "terminal_config.h"
 void terminal_init()
 {
     vga_fill(0,0,VGA_WIDTH,VGA_HEIGHT,' ');

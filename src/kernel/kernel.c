@@ -1,5 +1,5 @@
 #include "kernel.h"
-#include "../fat16/fat16.h"  // Include the FAT16 header
+#include "fat16/fat16.h"  // Include the FAT16 header
 #include <stdint.h>
 
 void display_char(uint16_t character, int position);
