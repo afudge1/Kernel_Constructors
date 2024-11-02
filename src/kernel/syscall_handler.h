@@ -45,5 +45,6 @@
 #define SYS_TIME      31
 #define SYS_SYSINFO   32
 
+int syscall_handler(int syscall, void *args);
 
 #endif // SYSCALL_HANDLER_H

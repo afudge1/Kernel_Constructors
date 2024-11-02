@@ -17,7 +17,7 @@ static uint32_t get_next_cluster(uint32_t cluster);
 static int allocate_cluster();
 
 void init_fat16() {
-    // Read the boot sector
+    // read boot sector
     syscall(SYS_READ, &boot_sector, SECTOR_SIZE);
 
     // Verify if it's a FAT16 filesystem
