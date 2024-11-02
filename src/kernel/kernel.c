@@ -4,5 +4,7 @@
 void display_char(uint16_t character, int position);
 
 int kmain() {
-    return 0; // Return from kmain
+    uint16_t* buffer = (uint16_t*)0xb8000;
+    *buffer = (uint16_t)0x020F;
+    return 0;
 }
