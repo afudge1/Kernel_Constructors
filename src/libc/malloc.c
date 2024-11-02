@@ -5,13 +5,13 @@
 static char heap[HEAP_SIZE]; // static buffer for heap
 
 typedef struct Block {
-    size_t size;          // Size of the block
-    struct Block *next;   // Pointer to the next free block
+    size_t size;          // block size
+    struct Block *next;   // next free block
 } Block;
 
-static Block *free_list = NULL; // Head of the free list
+static Block *free_list = NULL; // head
 
-// Initialize the memory allocator
+// initialize malloc
 void init_malloc() {
     free_list = (Block *)heap; // Set the free list to the start of the heap
     free_list->size = HEAP_SIZE - sizeof(Block); // Set the size of the first block
