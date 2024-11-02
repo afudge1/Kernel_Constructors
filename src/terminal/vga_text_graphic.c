@@ -42,7 +42,7 @@ void vga_fill(int32_t  y, int32_t  x, int32_t  width, int32_t  height, char text
     {
         for (int x=0;x<width;x++)
         {
-            vga_put_char(x,y,text)
+            vga_put_char(x,y,text);
         }
     }
 }
@@ -64,9 +64,10 @@ char vga_get_char(int32_t x, int32_t y)
         return ' ';
     }
 
-    uint16_t* vga_write_location = ((uint32_t)video_mem + (uint32_t)position)
+    uint32_t position = (y * VGA_WIDTH) + x;
+    uint16_t* vga_write_location = (uint16_t*)((uint32_t)video_memory + (uint32_t)position);
 
-    return *(vga_write_location >> 8);
+    return *(vga_write_location) >> 8;
 }
 
 void vga_put_char(int32_t x, int32_t y, char c)
@@ -77,6 +78,6 @@ void vga_put_char(int32_t x, int32_t y, char c)
     }
 
     uint32_t position = (y * VGA_WIDTH) + x;
-    uint16_t* vga_write_location = ((uint32_t)video_mem + (uint32_t)position)
+    uint16_t* vga_write_location = (uint16_t*)((uint32_t)video_memory + (uint32_t)position);
     *vga_write_location = (uint16_t)color_byte | (c << 8);
 }
