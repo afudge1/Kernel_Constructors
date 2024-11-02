@@ -18,21 +18,21 @@ static void print_int(int num) {
     char buffer[12]; // Enough for a 32-bit int
     int i = 0;
 
-    // handle negatives
+    // Handle negative numbers
     if (num < 0) {
         putchar('-');
         num = -num;
     }
 
-    // convert integer -> string in reverse order
+    // Convert integer to string in reverse order
     if (num == 0) {
         putchar('0');
         return;
     }
 
     while (num > 0) {
-        buffer[i++] = (num % 10) + '0'; // get last digit
-        num /= 10;                       // remove last digit
+        buffer[i++] = (num % 10) + '0'; // Get the last digit
+        num /= 10;                       // Remove the last digit
     }
 
     // Print the number in the correct order
