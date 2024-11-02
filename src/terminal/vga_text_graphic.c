@@ -1,4 +1,4 @@
-#include "libc.h"
+#include "libc/libc.h"
 #include <stddef.h>
 #include "vga_text_graphic.h"
 
