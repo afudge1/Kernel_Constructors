@@ -8,7 +8,7 @@
 char cwd[MAX_TERMINAL_PREFIX_BUFF+1];
 char terminal_buff[(MAX_TEMRINAL_HISTORY+1)* VGA_WIDTH];
 char terminal_input_buff[MAX_INPUT_BUFFER+1];
-bool terminal_active = true;
+int terminal_active = 1;
 uint32_t textbuffSize = 1;
 
 //char** terminal_text_history = (char* )malloc(sizeof(char*) * MAX_TEMRINAL_HISTORY);
