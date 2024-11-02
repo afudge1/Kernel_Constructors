@@ -3,5 +3,8 @@
 
 #define MAX_TEMRINAL_HISTORY 100
 #define MAX_TERMINAL_PREFIX_BUFF 60
+#define MAX_INPUT_BUFFER 1024
+
+
 
 #endif
