@@ -1,30 +1,69 @@
 ORG 0x7c00
-[BITS 16]
+BITS 16
 
-_start:
+CODE_SEG equ gdt_code - gdt_start
+DATA_SEG equ gdt_data - gdt_start
+; nasm -f bin ./boot.asm -o ./boot.bin
+; qemu-system-x86_64 -hda ./boot.bin
+; bless ./boot.bin
+
+; gdb
+;  target remote | qemu-system-i386 -hda ./bin/os.bin -S -gdb stdio
+;  target remote | qemu-system-x86_64 -hda ./bin/os.bin -S -gdb stdio
+;  c
+;  ctrl + c
+;  layout asm
+
+; Because booting from usb
+;;;;;;;;;;;;;;;;;;;;;;;;
+; bios block
     jmp short start
-        nop
+    nop
+;;;;;;;;;;;;;;;;;;;;;;;;;
 
-; Add filesystem here
+; FAT16 Header
+OEMIdentifier           db 'PEACHOS '
+BytesPerSector          dw 0x200
+SectorsPerCluster       db 0x80
+ReservedSectors         dw 200
+FATCopies               db 0x02
+RootDirEntries          dw 0x40
+NumSectors              dw 0x00
+MediaType               db 0xF8
+SectorsPerFat           dw 0x100
+SectorsPerTrack         dw 0x20
+NumberOfHeads           dw 0x40
+HiddenSectors           dd 0x00
+SectorsBig              dd 0x773594
+
+; Extended BPB (Dos 4.0)
+DriveNumber             db 0x80
+WinNTBit                db 0x00
+Signature               db 0x29
+VolumeID                dd 0xD105
+VolumeIDString          db 'PEACHOS BOO'
+SystemIDString          db 'FAT16   '
 
 start:
-    ; for old bioses that might load the bootloader into 0x7c00:0x0 instead of 0x0:0x7c00
-    jmp 0x0:biosthing
-biosthing:
-    ; set segment registers
-    cli
+    jmp 0x0:step2
+
+step2:
+    cli ; Clear Interrupts
     mov ax, 0x0
     mov ds, ax
     mov es, ax
     mov ss, ax
-    ; set stack to 0x7c00
     mov sp, 0x7c00
-loadProtectedMode:
+    sti ; Enables Interrupts
+
+.load_protected:
+    cli
     lgdt[gdt_descriptor]
     mov eax, cr0
     or eax, 0x1
     mov cr0, eax
-    jmp protectedMode
+    jmp CODE_SEG:load32
+    ;jmp $
 
 ; GDT
 gdt_start:
@@ -55,64 +94,71 @@ gdt_end:
 gdt_descriptor:
     dw gdt_end - gdt_start-1
     dd gdt_start
-
+    
 [BITS 32]
-protectedMode:
+load32:
     mov eax, 1
     mov ecx, 100
     mov edi, 0x0100000
-    call ata_lba_driver
-    jmp 0x0100000
+    call ata_lba_read
+    jmp CODE_SEG: 0x0100000
 
-ata_lba_driver:
-    ; Send the highest 8 bits of the LBA to the hard disk controller
-    shr eax, 24              ; Shift right to get the highest 8 bits of LBA in AL
-    or eax, 0xE0             ; Set master drive bit (0xE0) with the highest LBA bits
-    mov dx, 0x1F6            ; Select the drive/head register
-    out dx, al               ; Output the register value to 0x1F6
+ata_lba_read:
+    mov ebx, eax ; Backup the LBA
+    ; Send the highest 8 bits of the lba to hard disk controller
+    shr eax, 24
+    or eax, 0xE0 ; Select the master drive
+    mov dx, 0x1F6
+    out dx, al
+    ; Finished sending the highest 8 bits of the lba
 
-    mov eax, ecx             ; Move the sector count into EAX
-    mov dx, 0x1F2            ; Sector count register
-    out dx, al               ; Output the sector count to 0x1F2
+    ; Send the total sectors to read 
+    mov eax, ecx
+    mov dx, 0x1F2
+    out dx, al
+    ; Finished sending the total sectors to read
 
-    ; Send the lowest 8 bits of the LBA
-    mov eax, ebx             ; Restore the full LBA from EBX
-    mov dx, 0x1F3            ; Low byte of LBA register
-    out dx, al               ; Output LBA[0:7]
+    ; Send more bits of the LBA
+    mov eax, ebx ; Restore the backup LBA
+    mov dx, 0x1F3
+    out dx, al
+    ; Finished sending more bits of the LBA
 
-    ; Send bits 8–15 of the LBA
+    ; Send more bits of the LBA
     mov dx, 0x1F4
-    mov eax, ebx
-    shr eax, 8               ; Shift right to get LBA[8:15] in AL
-    out dx, al               ; Output LBA[8:15]
+    mov eax, ebx ; Restore the backup LBA
+    shr eax, 8
+    out dx, al
+    ; Finished sending more bits of the LBA
 
-    ; Send bits 16–23 of the LBA
+    ; Send upper 16 bits of the LBA
     mov dx, 0x1F5
-    mov eax, ebx
-    shr eax, 16              ; Shift right to get LBA[16:23] in AL
-    out dx, al               ; Output LBA[16:23]
+    mov eax, ebx ; Restore the backup LBA
+    shr eax, 16
+    out dx, al
+    ; Finished sending upper 16 bits of the LBA
 
-    ; issue read command
-    mov dx, 0x1F7            ; Command register
-    mov al, 0x20             ; ATA read command (0x20 for reading sectors)
-    out dx, al               ; Send the read command
+    mov dx, 0x1F7
+    mov al, 0x20
+    out dx, al
 
+    ; Read all sectors into memory
 .next_sector:
-    push ecx                 ; Preserve the remaining sector count on the stack
+    push ecx
 
+; Checking if we need to read
 .try_again:
-    mov dx, 0x1F7            ; Status register
-    in al, dx                ; Read the status
-    test al, 8               ; Check the Data Ready (DRQ) bit
-    jz .try_again            ; Wait until the drive signals data is ready
+    mov dx, 0x1F7
+    in al, dx
+    test al, 8
+    jz .try_again
 
-    ; Read 256 words (512 bytes) per sector into memory
-    mov ecx, 256             ; Each sector is 512 bytes, read in words (2 bytes each)
-    mov dx, 0x1F0            ; Data register
-    rep insw                 ; Read 256 words from data register into [ES:DI]
-
-    pop ecx                  ; Restore the sector count
-    loop .next_sector        ; Repeat until all sectors are read
+; We need to read 256 words at a time
+    mov ecx, 256
+    mov dx, 0x1F0
+    rep insw
+    pop ecx
+    loop .next_sector
     ; End of reading sectors into memory
     ret
 
