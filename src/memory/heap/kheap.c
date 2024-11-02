@@ -2,6 +2,9 @@
 #include "heap.h"
 #include "config.h"
 
+// Need to include this in kernel.c
+// #include "memory/heap/kheap.h"
+
 struct heap kernel_heap;
 struct heap_table kernel_heap_table;
 
@@ -20,4 +23,12 @@ void kheap_init() {
     if (res != 0) {
         print("Failed\n");
     }
+}
+
+void* kmalloc(size_t size) {
+    return heap_malloc(&kernel_heap, size);
+}
+
+void* kfree(void* ptr) {
+    heap_free(&kernel_heap, ptr);
 }
