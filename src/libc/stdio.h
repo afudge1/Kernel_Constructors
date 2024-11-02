@@ -3,17 +3,11 @@
 
 #include <stddef.h> // For size_t
 
-// Function declarations
-
-// Basic character output
-int putchar(char c);
-int puts(const char *str);
-
-// Formatted output
+// Function prototypes for standard I/O functions
 int printf(const char *format, ...);
-
-// String handling
-char *gets(char *str); // Note: gets is unsafe; consider alternatives
-int sprintf(char *str, const char *format, ...);
+int putchar(int c);
+int puts(const char *str);
+int getchar(void);
+char *gets(char *str); // unsafe :>
 
 #endif // STDIO_H

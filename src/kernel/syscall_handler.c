@@ -2,7 +2,7 @@
 #include "../terminal/terminal.h"
 
 // Placeholder functions for console I/O
-void console_write(const char *buffer, int length);
+void console_write(const char *buffer);
 int console_read(char *buffer, int length);
 void exit_process(int status); // Function to handle process exit
 
@@ -19,7 +19,7 @@ int syscall_handler(int syscall, void *args) {
         case SYS_WRITE: {
             const char *buffer = ((const char **)args)[0]; // output buffer
             int length = *((int *)(((const char **)args)[1])); // Length of output
-            console_write(buffer, length); // Call to write function
+            console_write(buffer); // Call to write function
             return length; // Return number of bytes written
             terminal_input(buffer);
         }

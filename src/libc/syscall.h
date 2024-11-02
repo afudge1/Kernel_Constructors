@@ -2,7 +2,7 @@
 #ifndef SYSCALL_H
 #define SYSCALL_H
 
-#include "../kernel/syscall_numbers.h"
+#include "../kernel/syscall_handler.h"
 
 // Function prototype for user_syscall
 int user_syscall(int number, void *args);
