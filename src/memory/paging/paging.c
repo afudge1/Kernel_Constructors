@@ -45,7 +45,7 @@ struct paging_4gb_chunk* paging_new_4gb(uint8_t flags) {
 // Switch to the given page directory
 void paging_switch(uint32_t* directory) {
     // Load new directory into CR3
-    paging_load_directory(directory); 
+    paging_load_directory(*directory); 
     // Update current directory pointer
     current_directory = directory; 
 }

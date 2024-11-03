@@ -10,6 +10,7 @@ global insb
 global div_by_zero
 global my_hlt
 
+
 idt_load:
     push ebp
     mov ebp, esp
@@ -83,7 +84,7 @@ outw:
 
 div_by_zero:
     int 0x0
-    ret
+    iret
 
 my_hlt:
     hlt

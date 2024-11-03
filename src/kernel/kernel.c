@@ -3,8 +3,26 @@
 #include "terminal/terminal.h"
 #include <stdint.h>
 #include "idt/idt.h"
+#include "../memory/heap/kheap.h"
+#include "../libc/printf.h"
 
 void display_char(uint16_t character, int position);
+
+void test_pointers() {
+void* ptr = kmalloc(100);
+    if(ptr) {
+        printf("Yay pointer worked");
+        kfree(ptr);
+    }
+
+    kfree(ptr);
+    if(ptr) {
+        printf("Yay free worked");
+    }
+
+
+    printf("Testttttt\n");
+}
 
 int kmain() {
     // Initialize the video memory
@@ -12,13 +30,15 @@ int kmain() {
     *video_memory = (uint16_t)0x020F;  // Set character and attribute (e.g., ' ' and bright white)
 
     terminal_init();
-    terminal_input("asdlaksda");
+    kheap_init();
+    printf("asdlaksda");
     idt_init();
-    terminal_input("goated");
+    printf("goated");
 
-    div_by_zero();
+    test_pointers();
+     //div_by_zero();
 
-
+    
     return 0; // Return from kmain
 }
 

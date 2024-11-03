@@ -1,4 +1,4 @@
-FILES = ./build/kernel.asm.o ./build/idt.o ./build/idt.asm.o ./build/kernel.o ./build/terminal.o ./build/vga_text_graphic.o ./build/string.o ./build/heap.o ./build/kheap.o
+FILES = ./build/kernel.asm.o ./build/idt.o ./build/idt.asm.o ./build/kernel.o ./build/terminal.o ./build/vga_text_graphic.o ./build/string.o ./build/heap.o ./build/kheap.o ./build/printf.o
 INCLUDES = -I./src
 FLAGS = -g -ffreestanding -falign-jumps -falign-functions -falign-labels -falign-loops -fstrength-reduce -fomit-frame-pointer -finline-functions -Wno-unused-function -fno-builtin -Werror -Wno-unused-label -Wno-cpp -Wno-unused-parameter -nostdlib -nostartfiles -nodefaultlibs -Wall -O0 -Iinc
 
@@ -41,3 +41,6 @@ all: ./bin/boot.bin ./bin/kernel.bin
 
 ./build/kheap.o: ./src/memory/heap/kheap.c
 	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/memory/heap/kheap.c -o ./build/kheap.o
+
+./build/printf.o: ./src/libc/printf.c
+	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/libc/printf.c -o ./build/printf.o
