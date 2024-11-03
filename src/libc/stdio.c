@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 // Function to output a single character
 int putchar(int c) {
     // Replace this with actual I/O operations appropriate for your system
@@ -22,7 +20,7 @@ int getchar(void) {
     // Here, implement actual input reading from your system
     // For example: syscall(SYS_READ, &c, 1);
     // This is a placeholder:
-    c = /* read character from input */;
+    c = 'p'/* read character from input */;
     
     return c; // Return the character read
 }

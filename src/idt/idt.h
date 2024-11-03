@@ -1,6 +1,8 @@
 #ifndef IDT_H
 #define IDT_H
 
+#include <stdint.h>
+
 #define total_interrupts 512
 
 struct idt_desc {
@@ -31,5 +33,12 @@ struct interrupt_frame {
     uint32_t esp;
     uint32_t ss;
 } __attribute__((packed));
+
+void idt_init();
+void idt_zero();
+
+extern void outb(unsigned short port, unsigned char val);
+extern void outw(unsigned short prot, unsigned short val);
+
 
 #endif

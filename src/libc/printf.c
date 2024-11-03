@@ -1,11 +1,11 @@
 // printf.c
 #include "stdio.h"
 #include "stdlib.h"  // For itoa or other utility functions
-#include "syscall.h"
+//#include "syscall.h"
 #include <stdarg.h>
 
 static void putchar(char c) {
-    syscall(SYS_WRITE, &c, sizeof(c));
+    
 }
 
 static void print_string(const char *str) {
