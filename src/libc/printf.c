@@ -15,14 +15,7 @@ void putchar(char c) {
 
     if (printf_buffer_i>=VGA_WIDTH || c == '\n' || c == 0)
     {
-        if (c=='\n')
-        {
-            printf_buffer[printf_buffer_i-1] = 0;
-        }
-        else
-        {
-            printf_buffer[printf_buffer_i] = 0;
-        }
+        printf_buffer[printf_buffer_i-1] = 0;
       
         terminal_input(printf_buffer);
         printf_buffer_i = 0;

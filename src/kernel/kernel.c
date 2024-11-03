@@ -1,7 +1,6 @@
 #include "kernel.h"
 #include "fat16/fat16.h"  // Include the FAT16 header
 #include "terminal/terminal.h"
-#include "libc/printf.h"
 #include <stdint.h>
 
 void display_char(uint16_t character, int position);
@@ -12,7 +11,7 @@ int kmain() {
     *video_memory = (uint16_t)0x020F;  // Set character and attribute (e.g., ' ' and bright white)
 
     terminal_init();
-    printf("alskdlaskdlasdklakds\nwomp womp\nhhggj%d\na", 293023);
+    terminal_input("asdlaksda");
 
     return 0; // Return from kmain
 }
