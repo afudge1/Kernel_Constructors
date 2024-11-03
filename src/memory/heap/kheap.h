@@ -14,7 +14,7 @@ void* kmalloc(size_t size);
 void kfree(void* ptr);
 
 // Allocates and sets a block of memory from the kernel heap of the specified size
-void* kzalloc(size_t size) {
+void* kzalloc(size_t size);
 
 
 #endif

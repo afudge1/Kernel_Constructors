@@ -1,7 +1,7 @@
 #include "kheap.h"
 #include "heap.h"
-#include "config.h"
-#include "memory.h"
+#include "../config.h"
+#include "../memory.h"
 
 // Need to include this in kernel.c
 // #include "memory/heap/kheap.h"
@@ -22,7 +22,7 @@ void kheap_init() {
     int res = heap_create(&kernel_heap, (void*)(PAINOS_HEAP_ADDRESS), end, &kernel_heap_table);
 
     if (res != 0) {
-        print("Failed\n");
+        return;
     }
 }
 

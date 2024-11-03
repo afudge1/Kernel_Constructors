@@ -1,6 +1,6 @@
 #include "heap.h"
-#include "kernel.h"
 #include <stdbool.h>
+#include "../../libc/string.h"  // Add this line to include the string.h header
 
 // Validates that the heap table matches the expected number of blocks
 static int heap_validate_table(void* ptr, void* end, struct heap_table* table) {

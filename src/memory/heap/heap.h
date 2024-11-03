@@ -1,42 +1,44 @@
-#include "kheap.h"
-#include "heap.h"
-#include "config.h"
-#include "memory.h"
+#ifndef HEAP_H
+#define HEAP_H
 
-// Need to include this in kernel.c
-// #include "memory/heap/kheap.h"
+#include "../config.h"
+#include <stdint.h>
+#include <stddef.h>
 
-struct heap kernel_heap;
-struct heap_table kernel_heap_table;
+// Indicates a block is occupied
+#define HEAP_BLOCK_TABLE_ENTRY_TAKEN 0x01
 
-void kheap_init() {
-    // Initialize kernel heap
+// Indicates a block is free
+#define HEAP_BLOCK_TABLE_ENTRY_FREE 0x00
 
-    // Should be 25600
-    int total_table_entries = PAINOS_HEAP_SIZE_BYTES / PAINOS_HEAP_BLOCK_SIZE;
-    
-    kernel_heap_table.entries = (HEAP_BLOCK_TABLE_ENTRY*)PAINOS_HEAP_TABLE_ADDRESS;
-    kernel_heap_table.total = total_table_entries;
+// Additional blocks in a multi-block allocation
+#define HEAP_BLOCK_HAS_NEXT 0x80
 
-    void* end = (void*)(PAINOS_HEAP_ADDRESS + PAINOS_HEAP_SIZE_BYTES);
-    int res = heap_create(&kernel_heap, (void*)(PAINOS_HEAP_ADDRESS), end, &kernel_heap_table);
+// Mark block as free (inverted with TAKEN to indicate the state)
+#define HEAP_BLOCK_IS_FREE  0x40
 
-    if (res != 0) {
-        print("Failed\n");
-    }
-}
+// Type definition for each entry in the heap's block table
+typedef unsigned char HEAP_BLOCK_TABLE_ENTRY;
 
-void* kmalloc(size_t size) {
-    return heap_malloc(&kernel_heap, size);
-}
-void* kzalloc(size_t size) {
-    void* ptr = kmalloc(size);
-    if(!ptr) {
-        return 0;
-    }
-    memset(ptr, 0, size);
-    return ptr;
-}
-void kfree(void* ptr) {
-    heap_free(&kernel_heap, ptr);
-}
+// Keeps track of memory block usage
+struct heap_table
+{
+    HEAP_BLOCK_TABLE_ENTRY* entries; // Array of entries marking block statuses (taken/free)
+    size_t total;                    // Total number of blocks in the heap
+};
+
+// Start address and its table
+struct heap
+{
+    struct heap_table* table;   // Pointer to the associated block table for this heap
+    void* start_address;        // Starting address of the heap's memory region
+};
+
+// Initializes a new heap with the given start and end addresses, and associates it with a block table
+int heap_create(struct heap* heap, void* ptr, void* end, struct heap_table* table);
+// Allocates memory of the specified size on the heap
+void* heap_malloc(struct heap* heap, size_t size);
+// Frees previously allocated memory at the specified pointer on the heap
+void heap_free(struct heap* heap, void* ptr);
+
+#endif
