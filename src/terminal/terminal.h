@@ -13,6 +13,6 @@ extern int terminal_active;
 extern uint32_t textbuffSize;
 
 void terminal_init();
-int terminal_input(const char* text);
+int terminal_input(char* text);
 
 #endif

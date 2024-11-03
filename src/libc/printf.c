@@ -11,17 +11,19 @@ uint32_t printf_buffer_i;
 
 void putchar(char c) {
     printf_buffer[printf_buffer_i]=c;
-    printf_buffer_i++;
+    printf_buffer_i+=1;
 
     if (printf_buffer_i>=VGA_WIDTH || c == '\n' || c == 0)
     {
         printf_buffer[printf_buffer_i-1] = 0;
+      
         terminal_input(printf_buffer);
-        for (int i=0;i<VGA_WIDTH+1;i++)
-        {
-            printf_buffer[i] = 0;
-        }        
         printf_buffer_i = 0;
+        for (int index=0;index < VGA_WIDTH+1;index++)
+        {
+            printf_buffer[index] = 0;
+        }
+
     }
 }
 
@@ -59,6 +61,7 @@ static void print_int(int num) {
 }
 
 int printf(const char *format, ...) {
+    printf_buffer_i = 0;
     va_list args;
     va_start(args, format);
 
