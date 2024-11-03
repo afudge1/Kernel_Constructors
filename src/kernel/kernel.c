@@ -2,6 +2,7 @@
 #include "fat16/fat16.h"  // Include the FAT16 header
 #include "terminal/terminal.h"
 #include <stdint.h>
+#include "idt/idt.h"
 
 void display_char(uint16_t character, int position);
 
@@ -12,6 +13,9 @@ int kmain() {
 
     terminal_init();
     terminal_input("asdlaksda");
+    idt_init();
+    terminal_input("goated");
+
 
     return 0; // Return from kmain
 }
