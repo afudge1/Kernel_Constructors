@@ -4,7 +4,6 @@
 #include "vga_text_graphic.h"
 #include "terminal_config.h"
 
-
 void terminal_init()
 {
     vga_init();
@@ -27,3 +26,4 @@ int terminal_input(const char* text)
     return 0;
 
 }
+

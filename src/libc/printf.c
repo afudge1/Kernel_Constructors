@@ -1,11 +1,28 @@
 // printf.c
 #include "stdio.h"
 #include "stdlib.h"  // For itoa or other utility functions
-#include "syscall.h"
 #include <stdarg.h>
+#include "printf.h"
+#include "terminal/terminal.h"
+#include "terminal/terminal_config.h"
 
-static void putchar(char c) {
-    syscall(SYS_WRITE, &c, sizeof(c));
+char printf_buffer[VGA_WIDTH+1];
+uint32_t printf_buffer_i;
+
+void putchar(char c) {
+    printf_buffer[printf_buffer_i]=c;
+    printf_buffer_i++;
+
+    if (printf_buffer_i>=VGA_WIDTH || c == '\n' || c == 0)
+    {
+        printf_buffer[printf_buffer_i-1] = 0;
+        terminal_input(printf_buffer);
+        for (int i=0;i<VGA_WIDTH+1;i++)
+        {
+            printf_buffer[i] = 0;
+        }        
+        printf_buffer_i = 0;
+    }
 }
 
 static void print_string(const char *str) {
@@ -79,5 +96,6 @@ int printf(const char *format, ...) {
     }
 
     va_end(args);
+    putchar('\n');
     return 0;
 }
