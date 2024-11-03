@@ -7,12 +7,14 @@
 //char** terminal_text_history = (char* )malloc(sizeof(char*) * MAX_TEMRINAL_HISTORY);
 
 extern char cwd[MAX_TERMINAL_PREFIX_BUFF+1];
-extern char terminal_buff[(MAX_TEMRINAL_HISTORY+1)* VGA_WIDTH];
 extern char terminal_input_buff[MAX_INPUT_BUFFER+1];
 extern int terminal_active;
 extern uint32_t textbuffSize;
 
 void terminal_init();
+void terminal_push_cli(char c);
+void terminal_enter();
 int terminal_input(char* text);
+
 
 #endif
