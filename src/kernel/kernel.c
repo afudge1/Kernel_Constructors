@@ -19,9 +19,6 @@ void* ptr = kmalloc(100);
     if(ptr) {
         printf("Yay free worked");
     }
-
-
-    printf("Testttttt\n");
 }
 
 int kmain() {
@@ -31,12 +28,13 @@ int kmain() {
 
     terminal_init();
     kheap_init();
-    printf("asdlaksda");
-    idt_init();
-    printf("goated");
+    
+    printf("Hello! Welcome to PainOS!");
+    printf("This is proof that printf works!");
+    printf("\n");
 
+    printf("This is calling homemade heap");
     test_pointers();
-     //div_by_zero();
 
     
     return 0; // Return from kmain
