@@ -1,6 +1,7 @@
 #include "kheap.h"
 #include "heap.h"
 #include "config.h"
+#include "memory.h"
 
 // Need to include this in kernel.c
 // #include "memory/heap/kheap.h"
@@ -28,7 +29,14 @@ void kheap_init() {
 void* kmalloc(size_t size) {
     return heap_malloc(&kernel_heap, size);
 }
-
-void* kfree(void* ptr) {
+void* kzalloc(size_t size) {
+    void* ptr = kmalloc(size);
+    if(!ptr) {
+        return 0;
+    }
+    memset(ptr, 0, size);
+    return ptr;
+}
+void kfree(void* ptr) {
     heap_free(&kernel_heap, ptr);
 }

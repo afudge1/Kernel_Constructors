@@ -1,44 +1,42 @@
-#ifndef HEAP_H
-#define HEAP_H
-
+#include "kheap.h"
+#include "heap.h"
 #include "config.h"
-#include <stdint.h>
-#include <stddef.h>
+#include "memory.h"
 
-// Indicates a block is occupied
-#define HEAP_BLOCK_TABLE_ENTRY_TAKEN 0x01
+// Need to include this in kernel.c
+// #include "memory/heap/kheap.h"
 
-// Indicates a block is free
-#define HEAP_BLOCK_TABLE_ENTRY_FREE 0x00
+struct heap kernel_heap;
+struct heap_table kernel_heap_table;
 
-// Additional blocks in a multi-block allocation
-#define HEAP_BLOCK_HAS_NEXT 0x80
+void kheap_init() {
+    // Initialize kernel heap
 
-// Mark block as free (inverted with TAKEN to indicate the state)
-#define HEAP_BLOCK_IS_FREE  0x40
+    // Should be 25600
+    int total_table_entries = PAINOS_HEAP_SIZE_BYTES / PAINOS_HEAP_BLOCK_SIZE;
+    
+    kernel_heap_table.entries = (HEAP_BLOCK_TABLE_ENTRY*)PAINOS_HEAP_TABLE_ADDRESS;
+    kernel_heap_table.total = total_table_entries;
 
-// Type definition for each entry in the heap's block table
-typedef unsigned char HEAP_BLOCK_TABLE_ENTRY;
+    void* end = (void*)(PAINOS_HEAP_ADDRESS + PAINOS_HEAP_SIZE_BYTES);
+    int res = heap_create(&kernel_heap, (void*)(PAINOS_HEAP_ADDRESS), end, &kernel_heap_table);
 
-// Keeps track of memory block usage
-struct heap_table
-{
-    HEAP_BLOCK_TABLE_ENTRY* entries; // Array of entries marking block statuses (taken/free)
-    size_t total;                    // Total number of blocks in the heap
-};
+    if (res != 0) {
+        print("Failed\n");
+    }
+}
 
-// Start address and its table
-struct heap
-{
-    struct heap_table* table;   // Pointer to the associated block table for this heap
-    void* start_address;        // Starting address of the heap's memory region
-};
-
-// Initializes a new heap with the given start and end addresses, and associates it with a block table
-int heap_create(struct heap* heap, void* ptr, void* end, struct heap_table* table);
-// Allocates memory of the specified size on the heap
-void* heap_malloc(struct heap* heap, size_t size);
-// Frees previously allocated memory at the specified pointer on the heap
-void heap_free(struct heap* heap, void* ptr);
-
-#endif
+void* kmalloc(size_t size) {
+    return heap_malloc(&kernel_heap, size);
+}
+void* kzalloc(size_t size) {
+    void* ptr = kmalloc(size);
+    if(!ptr) {
+        return 0;
+    }
+    memset(ptr, 0, size);
+    return ptr;
+}
+void kfree(void* ptr) {
+    heap_free(&kernel_heap, ptr);
+}
