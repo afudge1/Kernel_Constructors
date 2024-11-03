@@ -5,9 +5,9 @@
 
 // Function prototypes for standard I/O functions
 int printf(const char *format, ...);
-int putchar(int c);
+void putchar(char c);
 int puts(const char *str);
-int getchar(void);
+void getchar(void);
 char *gets(char *str); // unsafe :>
 
 #endif // STDIO_H

@@ -14,4 +14,5 @@ extern uint32_t textbuffSize;
 
 void terminal_init();
 int terminal_input(const char* text);
+
 #endif
