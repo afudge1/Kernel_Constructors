@@ -20,12 +20,20 @@ char *strcat(char *dest, const char *src) { // concatenates src to end of dest
     return dest;
 }
 
-int strcmp(const char *str1, const char *str2) {
-    while (*str1 && (*str1 == *str2)) {
-        str1++;
-        str2++;
+int strcmp(char string1[], char string2[] )
+{
+    for (int i = 0; ; i++)
+    {
+        if (string1[i] != string2[i])
+        {
+            return string1[i] < string2[i] ? -1 : 1;
+        }
+
+        if (string1[i] == '\0')
+        {
+            return 0;
+        }
     }
-    return *(unsigned char *)str1 - *(unsigned char *)str2;
 }
 
 // Set memory block to a specific value
