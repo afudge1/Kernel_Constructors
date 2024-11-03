@@ -5,6 +5,9 @@
 
 #define total_interrupts 512
 
+extern void div_by_zero();
+extern void my_hlt();
+
 struct idt_desc {
     uint16_t offset_1; // Offset bits 0 - 15
     uint16_t selector; // Selector thats in our GDT

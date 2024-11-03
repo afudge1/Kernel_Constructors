@@ -16,6 +16,8 @@ int kmain() {
     idt_init();
     terminal_input("goated");
 
+    div_by_zero();
+
 
     return 0; // Return from kmain
 }

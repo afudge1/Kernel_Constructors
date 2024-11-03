@@ -41,4 +41,5 @@ void idt_init() {
 
 void idt_zero() {
     terminal_input("Divide by zero error");
+    my_hlt();
 }

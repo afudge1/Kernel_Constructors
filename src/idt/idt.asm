@@ -7,6 +7,9 @@ global interrupt_pointer_table
 global outb
 global insb
 
+global div_by_zero
+global my_hlt
+
 idt_load:
     push ebp
     mov ebp, esp
@@ -77,3 +80,10 @@ outw:
 
     pop ebp
     ret
+
+div_by_zero:
+    int 0x0
+    ret
+
+my_hlt:
+    hlt
