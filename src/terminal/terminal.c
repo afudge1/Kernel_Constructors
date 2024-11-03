@@ -16,13 +16,20 @@ void terminal_init()
 }
 
 
-int terminal_input(const char* text)
+int terminal_input(char* text)
 {
     //uint32_t textLength = strlen(text);
     //char buffer[VGA_WIDTH];
     //uint32_t textIndex = 0;
+    char emptyText[VGA_WIDTH+1];
+    for (int i=0;i<VGA_WIDTH+1;i++)
+    {
+        emptyText[i] = ' ';
+    }
+    emptyText[VGA_WIDTH] = '\0';
     vga_copy(0,0,VGA_WIDTH,VGA_HEIGHT,0,-1);
-    vga_set(0,VGA_HEIGHT-1, text);
+    vga_set(0,VGA_HEIGHT-2, emptyText);
+    vga_set(0,VGA_HEIGHT-2, text);
     return 0;
 
 }

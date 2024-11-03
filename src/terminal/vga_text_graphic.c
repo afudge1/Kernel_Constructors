@@ -12,7 +12,7 @@ void vga_init()
     color_byte = VGA_TEXT_WHITE_DEFAULT;
     vga_fill(0,0,VGA_WIDTH,VGA_HEIGHT,' ');
 }
-void vga_set(int32_t  x, int32_t  y, const char* text)
+void vga_set(int32_t  x, int32_t  y, char* text)
 {
     uint32_t length = strlen(text);
     for (int i=0;i<length;i++)
